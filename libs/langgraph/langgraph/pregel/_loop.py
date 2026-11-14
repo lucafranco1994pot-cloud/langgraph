@@ -850,6 +850,8 @@ class PregelLoop:
         # every task that wrote would make runs with many task calls quadratic.
         writes = (w for w in self.checkpoint_pending_writes if w[0] in tasks)
         for tid, status in read_task_statuses(writes).items():
+            if status.error is not None:
+                continue
             tasks[tid].writes.extend(status.output)
             self._reapplied_task_ids.add(tid)
 
